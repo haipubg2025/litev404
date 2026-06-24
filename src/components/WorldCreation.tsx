@@ -52,7 +52,14 @@ export default function WorldCreation() {
     // @ts-ignore
     delete otherData[fieldKey];
 
-    const prompt = `Bạn là một AI chuyên gia sáng tạo kịch bản thế giới (World Building).\n\nDựa trên:\n- Ý tưởng sơ khai: "${initialIdea}"\n- Ý tưởng phát triển: "${developedIdea}"\n\nVà các thông tin thế giới hiện tại (nếu có):\n\`\`\`json\n${JSON.stringify(otherData, null, 2)}\n\`\`\`\n\nNhiệm vụ của bạn: Hãy phân tích các dữ liệu trên để sáng tạo nội dung mới thật hay, độc đáo, chi tiết, logic và liên kết chặt chẽ với các thông tin khác, viết cho mục: "${fieldName}".\n\n${fieldKey === 'writingStyle' ? 'ĐẶC BIỆT LƯU Ý CHO MỤC VĂN PHONG: Cần phân biệt rõ lối kể chuyện, văn phong giữa Phương Tây và Phương Đông, giữa Nhật Bản (Light novel/Isekai), Trung Quốc (Tiên Hiệp/Cổ trang) và Việt Nam. Cần phân biệt rõ từ Hán Việt phổ quát (dùng mọi bối cảnh) và từ Hán Việt mang sắc thái Cổ trang/Tiên hiệp (chỉ dùng cho bối cảnh phương Đông/Trung Quốc). Hãy quy định rõ cách sử dụng từ ngữ sao cho phù hợp với bối cảnh thế giới.\n\n' : ''}LƯU Ý TỐI THƯỢNG: TRẢ VỀ TRỰC TIẾP NỘI DUNG (dạng text thuần túy), KHÔNG giải thích luyên thuyên, KHÔNG bọc trong markdown (như \`\`\`json), KHÔNG dùng thẻ <THINKING_PROCESS>. Viết như một đoạn văn miêu tả trần thuật.`;
+    const contextData = {
+      worldData: otherData,
+      mcData,
+      npcs,
+      worldDetails
+    };
+
+    const prompt = `Bạn là một AI chuyên gia sáng tạo kịch bản thế giới (World Building).\n\nDựa trên:\n- Ý tưởng sơ khai: "${initialIdea}"\n- Ý tưởng phát triển: "${developedIdea}"\n\nVà các thông tin thế giới hiện tại (nếu có):\n\`\`\`json\n${JSON.stringify(contextData, null, 2)}\n\`\`\`\n\nNhiệm vụ của bạn: Hãy phân tích các dữ liệu trên để sáng tạo nội dung mới thật hay, độc đáo, chi tiết, logic và liên kết chặt chẽ với các thông tin khác, viết cho mục: "${fieldName}".\n\n${fieldKey === 'writingStyle' ? 'ĐẶC BIỆT LƯU Ý CHO MỤC VĂN PHONG: Cần phân biệt rõ lối kể chuyện, văn phong giữa Phương Tây và Phương Đông, giữa Nhật Bản (Light novel/Isekai), Trung Quốc (Tiên Hiệp/Cổ trang) và Việt Nam. Cần phân biệt rõ từ Hán Việt phổ quát (dùng mọi bối cảnh) và từ Hán Việt mang sắc thái Cổ trang/Tiên hiệp (chỉ dùng cho bối cảnh phương Đông/Trung Quốc). Hãy quy định rõ cách sử dụng từ ngữ sao cho phù hợp với bối cảnh thế giới.\n\n' : ''}LƯU Ý TỐI THƯỢNG: TRẢ VỀ TRỰC TIẾP NỘI DUNG (dạng text thuần túy), KHÔNG giải thích luyên thuyên, KHÔNG bọc trong markdown (như \`\`\`json), KHÔNG dùng thẻ <THINKING_PROCESS>. Viết như một đoạn văn miêu tả trần thuật.`;
 
     try {
       const result = aiService.generateStreamingContent(prompt, undefined, "Bạn là chuyên gia thiết kế thế giới game. Hãy tập trung và chỉ trả về đúng nội dung yêu cầu, tuyệt đối không tạo thẻ nội suy <THINKING_PROCESS> hay bất kỳ râu ria nào khác.");
